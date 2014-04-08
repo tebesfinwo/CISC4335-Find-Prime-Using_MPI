@@ -13,6 +13,7 @@
 */
 int prime(int num){
 	// handling special case
+	int i = 0;
 	if ( num < 3 ) {
 		if ( num == 2 ) 
 			return 0; 
@@ -22,7 +23,7 @@ int prime(int num){
 		//even number can't be prime
 		if(num % 2 == 0) return 1;
 		int sqrt_num = sqrt(num);
-		for(int i = 3; i < sqrt_num; i+=2){
+		for(i = 3; i < sqrt_num; i+=2){
 			if(num%i == 0) return 1;
 		}
 	}
@@ -91,6 +92,9 @@ int main(int argc, char** argv) {
     MPI_Barrier(MPI_COMM_WORLD);
     time_start = MPI_Wtime();
 
+    //initialize 
+    long i = 0;
+
 	long size = number / world_size;
 	long start = size * world_rank;
 	long finish = start + size;
@@ -99,7 +103,7 @@ int main(int argc, char** argv) {
 	// printf("start at %ld \n", start);
 	// printf("finish at %ld \n", finish);
 
-	for(long i = start; i <= finish; i++){
+	for(i = start; i <= finish; i++){
 		if( check_prime(i) == 0 ) 
 			count++;
 	}
