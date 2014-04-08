@@ -87,6 +87,7 @@ int main(int argc, char** argv) {
 	int world_rank;
 	MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
+	//get the starting time
     MPI_Barrier(MPI_COMM_WORLD);
     time_start = MPI_Wtime();
 
@@ -105,20 +106,23 @@ int main(int argc, char** argv) {
 
 	MPI_Reduce(&count, &total_count, 1, MPI_LONG, MPI_SUM, 0, MPI_COMM_WORLD);
 
+	//get the ending time
     MPI_Barrier(MPI_COMM_WORLD);
     time_end = MPI_Wtime();
 
     printf("Process %d starts at %f and ends at %f. Its elapse time is %f\n", world_rank, time_start, time_end, time_end - time_start);
 
+    /*
+	Since all processes are running in parallel, we just need to get the minimun starting time and maximum starting time to calculate the elapse time.
+    */
     MPI_Reduce(&time_start, &min_start_time, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
     MPI_Reduce(&time_end,  &max_end_time,1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
-	if ( world_rank == 0 ) {
-		printf("The total sum of prime number is %ld. \n", total_count);
-	}
 	MPI_Finalize();
 
+
 	if ( world_rank == 0 ) {
+		printf("The total sum of prime number is %ld. \n", total_count);
 		printf("The processes start at %f and finish  at %f. Their elapse time is %f\n", min_start_time, max_end_time, max_end_time - min_start_time);
 	}
 }
