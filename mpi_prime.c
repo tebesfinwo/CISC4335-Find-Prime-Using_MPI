@@ -94,9 +94,9 @@ int main(int argc, char** argv) {
 	long start = size * world_rank;
 	long finish = start + size;
 
-	printf("This is rank %d \n", world_rank);
-	printf("start at %ld \n", start);
-	printf("finish at %ld \n", finish);
+	// printf("This is rank %d \n", world_rank);
+	// printf("start at %ld \n", start);
+	// printf("finish at %ld \n", finish);
 
 	for(long i = start; i <= finish; i++){
 		if( check_prime(i) == 0 ) 
@@ -108,15 +108,17 @@ int main(int argc, char** argv) {
     MPI_Barrier(MPI_COMM_WORLD);
     time_end = MPI_Wtime();
 
-    printf("Process %d starts at %f and ends at %f\n", world_rank, time_start, time_end);
+    printf("Process %d starts at %f and ends at %f. Its elapse time is %f\n", world_rank, time_start, time_end, time_end - time_start);
 
-    MPI_Reduce(&min_start_time, &time_start, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
-    MPI_Reduce(&max_end_time, &time_end, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&time_start, &min_start_time, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&time_end,  &max_end_time,1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
-	MPI_Finalize();
-	
 	if ( world_rank == 0 ) {
 		printf("The total sum of prime number is %ld. \n", total_count);
-		printf("The processes start at %f and finish  at %f\n", min_start_time, max_end_time );
+	}
+	MPI_Finalize();
+
+	if ( world_rank == 0 ) {
+		printf("The processes start at %f and finish  at %f. Their elapse time is %f\n", min_start_time, max_end_time, max_end_time - min_start_time);
 	}
 }
