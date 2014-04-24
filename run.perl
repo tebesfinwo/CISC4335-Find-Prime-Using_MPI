@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 @program_names = ("mpi_prime");
-%program_nodes = ("mpi_prime", 4);
+%program_nodes = ("mpi_prime", 8);
 
 $program_to_run = $ARGV[0];
 if (!$program_to_run || !$program_nodes{$program_to_run}) {
